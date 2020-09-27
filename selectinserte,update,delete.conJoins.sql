@@ -131,3 +131,19 @@ from examenes_eliminados
 inner join examenes ex on examenes_eliminados.nom_plan = ex.nom_plan
 						and examenes_eliminados.nro_examen = ex.nro_examen;
 commit;
+
+#Eliminar las inscripciones a los cursos de este año de los alumnos que adeuden cuotas
+#impagas del año pasado.
+start transaction;
+drop temporary table if exists alumnos_cuotas_impagas;
+create temporary table alumnos_cuotas_impagas
+(
+	select distinct dni
+    from cuotas cuo
+    where fecha_pago is null and anio = year(CURRENT_DATE)-1
+);
+delete ins
+from inscripciones ins
+inner join alumnos_cuotas_impagas on alumnos_cuotas_impagas.dni = ins.dni
+where year(ins.fecha_inscripcion) = year(CURRENT_DATE);
+commit; 
