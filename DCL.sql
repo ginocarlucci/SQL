@@ -15,3 +15,15 @@ GRANT DELETE ON agencia_personal.Personas to 'gino'@'localhost';
 GRANT UPDATE ON agencia_personal.Personas to 'gino'@'localhost';
 #O de otra forma
 GRANT all PRIVILEGES ON agencia_personal.Personas to 'gino'@'localhost';
+
+#Quitarle todos los permisos a usuario.
+#REVOKE all PRIVILEGES ON agencia_personal.* FROM 'gino'@'localhost'; (nose pq me tira error)
+revoke INSERT ON agencia_personal.Personas from 'gino'@'localhost';
+revoke INSERT ON agencia_personal.Personas from 'gino'@'localhost';
+revoke INSERT ON agencia_personal.Personas from 'gino'@'localhost';
+revoke INSERT ON agencia_personal.Personas from 'gino'@'localhost';
+
+#Darle permisos a usuario de realizar SELECT, INSERT y UPDATE sobre la vista vw_contratos.
+GRANT UPDATE ON agencia_personal.vw_contratos to 'gino'@'localhost';
+GRANT INSERT ON agencia_personal.vw_contratos to 'gino'@'localhost';
+GRANT DELETE ON agencia_personal.vw_contratos to 'gino'@'localhost';
