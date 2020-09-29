@@ -33,3 +33,4 @@ inner join instalaciones_servicios ins_ser on ins_ser.codigo_instalacion = ie.co
 inner join servicios ser on ser.nombre = ins_ser.nombre_servicio
 group by 1;
 */
+
