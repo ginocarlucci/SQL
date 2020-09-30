@@ -101,7 +101,50 @@ return cant_adeudado;
 END$$
 DELIMITER ;
 
+#Crear un procedimiento almacenado llamado alumno_inscripcion que dados los datos de
+#un alumno y un curso lo inscriba en dicho curso el día de hoy y genere la primera cuota con
+#fecha de emisión hoy para el mes próximo.
 
+DELIMITER $$
+USE `afatse`$$
+create procedure alumno_inscripcion(in dniAlumno int, in plan char, in nro int)
+BEGIN
 
+start transaction;
+insert into inscripciones 
+values (plan, nro, dniAlumno, CURRENT_DATE);
+insert into cuotas 
+values (plan, nro, dniAlumno, year(current_Date), month(current_date), current_date, null, null);
+commit;
 
+END$$
+DELIMITER ;
 
+#Crear un procedimiento almacenado llamado alumno_anula_inscripcion que elimine la
+#inscripción del alumno. El mismo deberá tener en cuenta que el alumno no haya pagado
+#ninguna cuota antes de eliminarlo. Si hay cuotas ya generadas pero impagas las mismas
+#deberán ser eliminadas.
+
+DELIMITER $$
+USE `afatse`$$
+
+CREATE PROCEDURE `alumno_anula_inscripcion`(IN plan CHAR(20), IN curso INTEGER(11), IN
+alumno INTEGER(11))
+BEGIN
+	declare cuotas_pagas integer(11);
+	select count(*) into cuotas_pagas
+	from cuotas
+	where nom_plan=plan and nro_curso=curso and dni=alumno
+			and fecha_pago is not null;
+	if cuotas_pagas<=0 then
+		start transaction;
+		delete from cuotas 
+        where nom_plan=plan and nro_curso=curso
+				and dni=alumno and fecha_pago is null;
+		delete from inscripciones
+        where nom_plan=plan and nro_curso=curso and dni=alumno;
+		commit;
+	end if;
+
+END$$
+DELIMITER ;
